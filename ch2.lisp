@@ -181,12 +181,20 @@
       (cons (car list-1)
             (.append (cdr list-1)
                      list-2))))
+; Exercise 2.17
 (defun last-pair (l)
   (if (null (cdr l))
       l
       (last-pair (cdr l))))
 
-
+; Exercise 2.18
+(defun rev (l)
+  (defun .rev (curr prev)
+    (if (null curr)
+        prev
+        (.rev (cdr curr)
+              (cons (car curr) prev))))
+  (.rev l nil))
 
 
 
