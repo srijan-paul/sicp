@@ -75,9 +75,9 @@
     (make-point (avg (x-point start) (x-point end))
                 (avg (y-point start) (y-point end)))))
 
+; Exercise 2.2
 (defun make-rect (tl w h)
   (cons tl (cons w h)))
-
 
 (defun w-rect (r)
   (car (cdr r)))
@@ -88,6 +88,103 @@
 (defun tl-rect (r)
   (car r))
 
+(defun per-rect (r)
+  (* 2 (+ (h-rect r) (w-rect r))))
+
+; Exercise 2.4
+(defun my-cons (x y)
+  (lambda (m) (funcall m x y)))
+
+(defun my-car (z)
+  (funcall z (lambda (p _) p)))
+
+(defun my-cdr (z)
+  (funcall z (lambda (_ q) q)))
+
+(defun make-%-interval (base err%)
+  (let ((err (* (/ err% 100) base))) 
+    (cons (- base err) (+ base err))))
+
+(defun make-interval (lo hi)
+  (cons lo hi))
+
+(defun lower-bound (x)
+  (car x))
+
+(defun upper-bound (x)
+  (cdr x))
+
+(defun add-interval (x y)
+  (make-interval (+ (lower-bound x)
+                    (lower-bound y))
+                 (+ (upper-bound x)
+                    (upper-bound y))))
+
+(defun mul-interval (x y)
+  (let ((p1 (* (lower-bound x)
+               (lower-bound y)))
+        (p2 (* (lower-bound x)
+               (upper-bound y)))
+        (p3 (* (upper-bound x)
+               (lower-bound y)))
+        (p4 (* (upper-bound x)
+               (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+
+(defun div-interval (x y)
+  (let ((ux (upper-bound x))
+        (ly (lower-bound y)))
+    
+    (if (or (= ux 0) (= ly 0)) 
+        (error "Cannot divide by zero")
+        (mul-interval x
+                  (make-interval
+                    (/ 1.0 ux)
+                    (/ 1.0 ly))))))
+
+(defun sub-interval (x y)
+  (make-interval (- (lower-bound x)
+                    (upper-bound y))
+                 (- (upper-bound x)
+                    (lower-bound y))))
+
+(defun par1 (r1 r2)
+  (div-interval
+    (mul-interval r1 r2)
+    (add-interval r1 r2)))
+
+(defun par2 (r1 r2)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+
+(defun list-ref (l n)
+  (if (= n 0)
+      (car l)
+      (list-ref (cdr l)
+                (- n 1))))
+
+(defun len (items)
+  (defun len-iter (items n)
+    (if (null items)
+        n
+        (len-iter (cdr items) 
+                  (+ n 1))))
+  (len-iter items 0))
+
+(defun .append (list-1 list-2)
+  (if (null list-1)
+      list-2
+      (cons (car list-1)
+            (.append (cdr list-1)
+                     list-2))))
+(defun last-pair (l)
+  (if (null (cdr l))
+      l
+      (last-pair (cdr l))))
 
 
 
