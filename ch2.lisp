@@ -197,10 +197,13 @@
   (.rev l nil))
 
 
-
-
-
-
-
-
+(defun same-parity (a &rest b)
+  (defun .parity (curr)
+    (cond ((null curr) nil)
+          ((= (mod a 2)
+              (mod (car curr) 2))
+           (cons (car curr)
+                 (.parity (cdr curr))))
+          ((.parity (cdr curr)))))
+  (cons a (.parity b)))
 
