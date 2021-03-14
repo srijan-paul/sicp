@@ -227,5 +227,14 @@
             (count-leaves (cdr tree))))))
 
 
-; (defun deep-rev (l)
-;   1)
+(defun deep-rev (l)
+  (defun deep-rev-rec (prev curr)
+    (if (null curr)
+        prev
+        (let ((carcurr (if (consp    (car curr))
+                           (deep-rev (car curr))
+                           (car curr))))
+          (deep-rev-rec (cons carcurr
+                              prev)
+                        (cdr curr)))))
+  (deep-rev-rec nil l))
