@@ -102,7 +102,7 @@
   (funcall z (lambda (_ q) q)))
 
 (defun make-%-interval (base err%)
-  (let ((err (* (/ err% 100) base))) 
+  (let ((err (* (/ err% 100) base)))
     (cons (- base err) (+ base err))))
 
 (defun make-interval (lo hi)
@@ -136,8 +136,8 @@
 (defun div-interval (x y)
   (let ((ux (upper-bound x))
         (ly (lower-bound y)))
-    
-    (if (or (= ux 0) (= ly 0)) 
+
+    (if (or (= ux 0) (= ly 0))
         (error "Cannot divide by zero")
         (mul-interval x
                   (make-interval
@@ -171,7 +171,7 @@
   (defun len-iter (items n)
     (if (null items)
         n
-        (len-iter (cdr items) 
+        (len-iter (cdr items)
                   (+ n 1))))
   (len-iter items 0))
 
@@ -196,7 +196,7 @@
               (cons (car curr) prev))))
   (.rev l nil))
 
-
+; Exercise 2.20
 (defun same-parity (a &rest b)
   (defun .parity (curr)
     (cond ((null curr) nil)
@@ -207,3 +207,25 @@
           ((.parity (cdr curr)))))
   (cons a (.parity b)))
 
+
+; Exercise 2.21
+(defun square-list (items)
+  (mapcar (lambda (x) (* x x)) items))
+
+; Exercise 2.23
+(defun for-each (f l)
+  (if (null l)
+    T
+    (prog2
+     (funcall f (car l))
+     (for-each f (cdr l)))))
+
+(defun count-leaves (tree)
+  (cond ((null tree) 0)
+        ((not (consp tree)) 1)
+        ((+ (count-leaves (car tree))
+            (count-leaves (cdr tree))))))
+
+
+; (defun deep-rev (l)
+;   1)
