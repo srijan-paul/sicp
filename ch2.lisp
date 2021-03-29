@@ -238,3 +238,70 @@
                               prev)
                         (cdr curr)))))
   (deep-rev-rec nil l))
+
+; Exercise 2.28 - Fringe
+(defun fringe (tree)
+  (if (null tree)
+      nil
+      (let ((cartree (car tree))
+            (fringe-of-rest (fringe (cdr tree))))
+        (if (consp cartree)
+            (append (fringe cartree)
+                    fringe-of-rest)
+            (cons cartree fringe-of-rest)))))
+
+(defun scale-tree (tree factor)
+  (mapcar (lambda (subtree)
+            (if (consp subtree)
+                (scale-tree subtree factor)
+                (* subtree factor)))
+          tree))
+
+
+(defun square-tree (tree)
+  (mapcar (lambda (subtree)
+            (if (consp subtree)
+                (square-tree subtree)
+                (* subtree subtree)))
+          tree))
+
+(defun tree-map (fn tree)
+  (mapcar (lambda (sub-tree)
+            (if (consp sub-tree)
+                (tree-map fn sub-tree)
+                (funcall fn sub-tree)))
+          tree))
+
+(defun filter (predicate seq)
+  (cond ((null seq) nil)
+        ((funcall predicate (car seq))
+         (cons (car seq)
+               (filter predicate (cdr seq))))
+        ((filter predicate (cdr seq)))))
+
+(defun accumulate (op acc seq)
+  (if (null seq)
+      acc
+      (accumulate op
+                  (funcall op acc
+                           (car seq))
+                  (cdr seq))))
+
+(defun enumerate-interval (lo hi)
+  (if (> lo hi)
+      nil
+      (cons lo
+            (enumerate-interval (+ lo 1) hi))))
+
+(defun enumerate-tree (tree)
+  (cond ((null tree) nil)
+        ((not (consp tree)) (list tree))
+        ((append
+           (enumerate-tree (car tree))
+           (enumerate-tree (cdr tree))))))
+
+(defun .map (p seq)
+  (accumulate (lambda (x y) 
+                (cons x (funcall p y)))
+              nil
+              seq))
