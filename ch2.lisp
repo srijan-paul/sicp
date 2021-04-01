@@ -318,5 +318,6 @@
   (accumulate #'cons
               seq2
               seq1))
+
 (defun xlength (seq)
   (accumulate (lambda (_ x) (+ x 1)) 0 seq))
