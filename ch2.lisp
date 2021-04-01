@@ -282,10 +282,10 @@
 (defun accumulate (op acc seq)
   (if (null seq)
       acc
-      (accumulate op
-                  (funcall op acc
-                           (car seq))
-                  (cdr seq))))
+      (funcall op (car seq)
+          (accumulate op
+                      acc
+                      (cdr seq)))))
 
 (defun enumerate-interval (lo hi)
   (if (> lo hi)
@@ -300,8 +300,23 @@
            (enumerate-tree (car tree))
            (enumerate-tree (cdr tree))))))
 
-(defun .map (p seq)
-  (accumulate (lambda (x y) 
+(defun subsets (s)
+ (if (null s)
+     (list nil)
+     (let ((rest (subsets (cdr s))))
+       (append rest (mapcar (lambda (ls)
+                               (cons (car s) ls))
+                               rest)))))
+
+(defun xmap (p seq)
+  (accumulate (lambda (x y)
                 (cons x (funcall p y)))
               nil
               seq))
+
+(defun xappend (seq1 seq2)
+  (accumulate #'cons
+              seq2
+              seq1))
+(defun xlength (seq)
+  (accumulate (lambda (_ x) (+ x 1)) 0 seq))
