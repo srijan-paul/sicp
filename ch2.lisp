@@ -321,3 +321,23 @@
 
 (defun xlength (seq)
   (accumulate (lambda (_ x) (+ x 1)) 0 seq))
+
+
+(defun horner-eval (x coefficient-sequence)
+  (accumulate
+   (lambda (this-coeff higher-terms)
+     (+ this-coeff (* higher-terms x)))
+   0
+   coefficient-sequence))
+
+(defun accumulate-n (op init seqs)
+  (if (null (car seqs))
+      nil
+      (cons (accumulate op init (mapcar #'car seqs))
+            (accumulate-n op init (mapcar #'cdr seqs)))))
+
+(defun dot-* (v w)
+  (accumulate #'+ 0 (mapcar #'* v w)))
+
+(defun matrix-*-vector (m v)
+  (mapcar <??> m))
