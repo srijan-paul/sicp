@@ -339,5 +339,32 @@
 (defun dot-* (v w)
   (accumulate #'+ 0 (mapcar #'* v w)))
 
-(defun matrix-*-vector (m v)
-  (mapcar <??> m))
+
+; Skipping some exercises that I have done prior but
+; did not commit on this repo
+
+(defun flatmap (proc seq)
+  (accumulate #'append nil (mapcar proc seq)))
+
+; 2.40
+
+(defun unique-pairs (n)
+  (flatmap (lambda (i)
+            (mapcar (lambda (j) (list i j))
+                    (enumerate-interval 1 (- i 1))))
+          (enumerate-interval 1 n)))
+
+
+(defun unique-triples (n)
+  (filter (lambda (i) (not (null i))) 
+          (flatmap (lambda (i)
+                     (flatmap (lambda (j)
+                               (mapcar (lambda (k) (list i j k))
+                                       (enumerate-interval 1 (- j 1))))
+                             (enumerate-interval 1 (- i 1))))
+                    (enumerate-interval 1 n))))
+
+(defun triples-with-sum (sum n)
+  (filter (lambda (xs)
+            (= (accumulate #'+ 0 xs) sum))
+          (unique-triples n)))
