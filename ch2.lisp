@@ -342,7 +342,6 @@
 
 ; Skipping some exercises that I have done prior but
 ; did not commit on this repo
-
 (defun flatmap (proc seq)
   (accumulate #'append nil (mapcar proc seq)))
 
@@ -355,16 +354,41 @@
           (enumerate-interval 1 n)))
 
 
-(defun unique-triples (n)
-  (filter (lambda (i) (not (null i))) 
-          (flatmap (lambda (i)
-                     (flatmap (lambda (j)
-                               (mapcar (lambda (k) (list i j k))
-                                       (enumerate-interval 1 (- j 1))))
-                             (enumerate-interval 1 (- i 1))))
-                    (enumerate-interval 1 n))))
+(defun k-tuples (n k)
+  (cond ((= k 0) (list nil))
+        ((< n k) nil)
+        ((append (k-tuples (- n 1) k)
+                 (mapcar (lambda (xs) (cons n xs))
+                         (k-tuples (- n 1) (- k 1)))))))
 
 (defun triples-with-sum (sum n)
   (filter (lambda (xs)
             (= (accumulate #'+ 0 xs) sum))
-          (unique-triples n)))
+          (k-tuples n 3)))
+
+; Exercise 2.42
+; The eight queens problem.
+
+(defvar empty-board ())
+
+(defun queens (board-size)
+  (defun queen-cols (k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) 
+           (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (mapcar (lambda (new-row)
+                   (adjoin-position 
+                    new-row 
+                    k 
+                    rest-of-queens))
+                 (enumerate-interval 
+                  1 
+                  board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+
